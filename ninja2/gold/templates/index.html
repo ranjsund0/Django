@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninja Gold</title>
+</head>
+<a href="/reset">Reset</a>
+<div>
+    <form action="/gold" method="POST"></form>
+    {% csrf_token %}
+    <p>Your Gold: {{request.session.total_gold}}</p>
+</div>  
+
+
+<body>
+    <form action="/process"
+    method="POST">
+        {% csrf_token %}
+        <h2>Farm</h2>
+        <p>(earns 10-20 golds)</p>
+        <input type="hidden" id ="farm" name="place" value="farm">
+
+        <input type="submit" value="Find Gold">
+    </form>
+    
+    <form action="/process"
+    method="POST">
+        {% csrf_token %}
+        <h2>Cave</h2>
+        <p>(earns 5-10 golds)</p>
+        <input type="hidden" id ="farm" name="place" value="cave">
+        <input type="submit" value="Find Gold">
+    </form>
+
+    <form action="/process"
+    method="POST">
+        {% csrf_token %}
+        <h2>House</h2>
+        <p>(earns 2-5 golds)</p>
+        <input type="hidden" id ="farm" name="place" value="house">
+        <input type="submit" value="Find Gold">
+    </form>
+
+    <form action="/process"
+    method="POST">
+        {% csrf_token %}
+        <h2>Casino</h2>
+        <p>(earns/takes 0-50 golds)</p>
+        <input type="hidden" id ="farm" name="place" value="casino">
+        <input type="submit" value="Find Gold">
+    </form>
+
+    {% for prize in request.session.activities%}
+    <p>{{prize}}</p>
+    <p>{{prize.earned}}</p>
+    {%endfor%}
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wall</title>
+</head>
+<body>
+    {% if messages %}
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    {% endif %}
+
+    <h1>The Wall</h1>
+
+    <a href="/logout">Logout</a>
+
+    <h2> Welcome {{ user.first_name }} </h2>
+    
+
+    <form action="/post_message" method="POST">
+        {% csrf_token %}
+        <label for="post_message">Post Message</label>
+        <input type ="text" name="post_message">
+        {% comment %} post_message comes from views.py {% endcomment %}
+        <input type="submit" value="Post Message">
+    </form> 
+
+    {% for wall_message in wall_messages %}
+    {% comment %} wall_messages is from context in views.py {% endcomment %}
+
+    <p>{{wall_message.message}}</p>
+    <p>Posted by {{wall_message.message_by.first_name}} {{wall_message.message_by.last_name}}</p>
+    <p>Created at: {{wall_message.created_at}}</p>
+    
+    <form action="/delete_message/{{wall_message.id}}"method="POST">
+        {%csrf_token%}
+        <input type="submit" value="Delete Message">
+    </form>
+    <a href="/like/{{wall_message.id}}">Like</a>
+    <p>{{wall_message.user_likes.count}}</p>
+    
+    {% for comment in wall_message.wall_message_comments.all %}
+
+    {% comment %} this wall_message comes from model Comment(wall_message-foreign key) and related name -also must add.all{% endcomment %}
+    
+        <p>{{ comment.comments}} </p>
+        <p>Comment by {{comment.poster.first_name}}</p>
+        <p>Created at: {{comment.created_at}}</p>
+        <form action="/delete_comment/{{comment.id}}"method="POST">
+            {%csrf_token%}
+            <input type="submit" value="Delete Comment">
+        </form>
+    {% endfor %}
+    
+    <form action="/post_comment/{{wall_message.id}}" method="POST">
+        {% csrf_token %}
+        <label for="post_comment">Post Message</label>
+        <input type ="text" name="post_comment">
+        <input type="submit" value="Post Comment">
+    </form> 
+    {% endfor %}
+    
+
+
+</body>
+</html>

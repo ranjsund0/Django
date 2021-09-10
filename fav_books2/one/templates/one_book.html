@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One_book</title>
+</head>
+<body>
+    <h1>Welcome {{ user.first_name }}</h1>
+    <p>Title {{book.title}}</p>
+    <p>Added by: {{ book.creator.first_name }}</p>
+    <p>Added on: {{ book.created_at}} </p>
+    <p>Last updated on {{book.updated_at}} </p>
+    
+
+    {% if book.creator.id != request.session.user_id %}
+    <p>Description:  {{book.description}}</p>
+    {% else %}
+
+    <form action="/books/{{book.id}}/update" method="POST">
+        {% csrf_token %}
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+        <div>
+            <label for="title">Title</label>
+            <input type="text" name="title"
+            value="{{book.title}}">
+        <div>
+            <label for="description">Description</label>
+            <input type="text" name="description" value="{{book.description}}">
+        <div>
+            <input type="submit" value="Update">
+            <a href="/books/{{book.id}}/delete">Delete</a>
+        </div>
+    </form>
+
+    {% endif %}
+
+            
+    
+        
+    
+        <h3>Users Who Like This Book:</h3>
+    
+        {% for user in book.favorited_by.all %}
+            <p>{{user.first_name}} {{user.last_name}}</p>
+        {% endfor %}
+
+        {% if user not in book.favorited_by.all %}
+        <a href="/favorite/{{book.id}}">Favorite</a>
+        
+        {% else %}
+
+        <a href="/unfavorite/{{book.id}}">Unfavorite</a>
+        
+        {% endif %}
+
+        
+
+    
+    
+</body>
+</html>
